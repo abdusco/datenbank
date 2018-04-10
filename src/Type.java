@@ -106,6 +106,9 @@ class Type {
         page.addRecord(record);
         addOrUpdatePage(page);
         savePages();
+        Logger.log(String.format("No existing record with key '%s'", values.get(getKeyField())));
+        Logger.log(String.format("Inserting at Page #%d", page.getId()));
+        Logger.log(String.format("A '%s' record has been created", name));
         // TODO: update catalog with page count
     }
 
@@ -146,6 +149,7 @@ class Type {
 
     Record getRecord(String key) {
         for (Page page : pages) {
+            Logger.log(String.format("Reading Page #%d", page.getId()));
             Record record = page.getRecord(key);
             if (record != null) return record;
         }
@@ -154,11 +158,13 @@ class Type {
 
     void deleteRecord(String key) throws IOException {
         for (Page page : pages) {
+            Logger.log(String.format("Reading Page #%d", page.getId()));
             Record record = page.getRecord(key);
             if (record == null) continue;
 
             page.deleteRecord(record);
             savePages();
+            Logger.log(String.format("A '%s' record with key '%s' has been deleted", name, key));
             return;
         }
     }

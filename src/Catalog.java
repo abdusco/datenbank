@@ -77,6 +77,7 @@ class Catalog {
             types.remove(type);
             deleteTypeFile(type.getFilename());
             updateCatalogFile();
+            Logger.log(String.format("Type '%s' has been deleted", name));
             return;
         }
     }

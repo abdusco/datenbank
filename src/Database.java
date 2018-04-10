@@ -21,24 +21,20 @@ public class Database {
 
     public void createType(String typeName, ArrayList<String> fields, String keyField) throws IOException, InvalidTypeException, InvalidPageException {
         catalog.createType(typeName, fields, keyField);
-        Logger.log(String.format("Type '%s' has been created", typeName));
     }
 
     public void deleteType(String typeName) throws IOException {
         catalog.deleteType(typeName);
-        Logger.log(String.format("Type '%s' has been deleted", typeName));
     }
 
     public void createRecord(String typeName, HashMap<String, String> fieldValues) throws IOException, InvalidRecordException {
         Type type = catalog.getType(typeName);
         type.createRecord(fieldValues);
-        Logger.log(String.format("A '%s' record has been created", typeName));
     }
 
     public void deleteRecord(String typeName, String key) throws IOException {
         Type type = catalog.getType(typeName);
         type.deleteRecord(key);
-        Logger.log(String.format("A '%s' record with key '%s' has been deleted", typeName, key));
     }
 
     public Record getRecord(String typeName, String key) {

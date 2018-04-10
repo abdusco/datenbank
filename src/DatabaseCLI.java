@@ -110,7 +110,7 @@ public class DatabaseCLI {
         Type type = db.getType(typeName);
         if (type == null) {
             System.out.println("No such type exists");
-            getType();
+            return getType();
         }
         return type;
     }

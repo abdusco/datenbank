@@ -30,7 +30,10 @@ public class DatabaseCLI {
         while (true) {
             int command = getCommandFromUser();
             if (command == COMMAND_EXIT) break;
-            if (command > MAX_COMMAND) continue;
+            if (command > MAX_COMMAND) {
+                System.out.println("Invalid command");
+                continue;
+            }
 
             runCommand(command);
             System.out.println("Done.\n\n");
@@ -38,22 +41,22 @@ public class DatabaseCLI {
     }
 
     private void displayBanner() {
-        System.out.println("WILKOMMEN ZUR DATENBANK");
-        System.out.println("=======================");
+        System.out.println("Datenbank v1.0");
+        System.out.println("==============");
     }
 
     private int getCommandFromUser() {
         System.out.println("PICK AN ACTION:");
-        System.out.println("\t0 - Exit");
+        System.out.println(String.format("\t%d - Exit", COMMAND_EXIT));
         System.out.println("# DDL Operations");
-        System.out.println("\t1 - Create a type");
-        System.out.println("\t2 - Delete a type");
-        System.out.println("\t3 - List all types");
+        System.out.println(String.format("\t%d - Create a type", COMMAND_CREATE_TYPE));
+        System.out.println(String.format("\t%d - Delete a type", COMMAND_DELETE_TYPE));
+        System.out.println(String.format("\t%d - List all types", COMMAND_LIST_TYPES));
         System.out.println("# DML Operations");
-        System.out.println("\t4 - Create a record");
-        System.out.println("\t5 - Delete a record");
-        System.out.println("\t6 - Find a record");
-        System.out.println("\t7 - List all records");
+        System.out.println(String.format("\t%d - Create a record", COMMAND_CREATE_RECORD));
+        System.out.println(String.format("\t%d - Delete a record", COMMAND_DELETE_RECORD));
+        System.out.println(String.format("\t%d - Find a record", COMMAND_FIND_RECORD));
+        System.out.println(String.format("\t%d - List all records", COMMAND_LIST_RECORDS));
 
         return scanner.nextInt();
     }
@@ -116,13 +119,22 @@ public class DatabaseCLI {
     }
 
     private void deleteType() throws IOException {
+        displayAvailableTypes();
         String name = getType().getName();
         db.deleteType(name);
     }
 
+    private void displayAvailableTypes() {
+        System.out.println("Available types:");
+        for (Type type : db.getTypes()) {
+            System.out.println(String.format("\t%s", type.getName()));
+        }
+    }
+
     private void listTypes() {
         for (Type type : db.getTypes()) {
-            String fields = type.getFields().stream().collect(Collectors.joining(", "));
+            String fields = type.getFields().stream()
+                    .collect(Collectors.joining(", "));
 
             System.out.println(type.getName());
             System.out.println(String.format("\tFields: %s", fields));
@@ -132,6 +144,8 @@ public class DatabaseCLI {
     }
 
     private void createRecord() throws IOException, InvalidRecordException {
+        displayAvailableTypes();
+
         Type type = getType();
 
         System.out.println("Type in the field values");
@@ -145,6 +159,7 @@ public class DatabaseCLI {
     }
 
     private void deleteRecord() throws IOException {
+        displayAvailableTypes();
         Type type = getType();
 
         System.out.println(String.format("Type in a '%s' value of for the record of type '%s'", type.getKeyField(), type.getName()));
@@ -153,6 +168,7 @@ public class DatabaseCLI {
     }
 
     private void findRecord() {
+        displayAvailableTypes();
         Type type = getType();
 
         System.out.println(String.format("Type in a '%s' value of for the record of type '%s'", type.getKeyField(), type.getName()));
@@ -167,6 +183,7 @@ public class DatabaseCLI {
     }
 
     private void listRecords() {
+        displayAvailableTypes();
         Type type = getType();
         System.out.println(String.format("Listing records for type '%s'", type.getName()));
         for (Record record : type.getRecords()) {
